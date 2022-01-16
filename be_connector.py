@@ -2,6 +2,7 @@ from datetime import datetime
 from abc import ABC, abstractmethod
 import traceback
 
+from fastapi import HTTPException
 import requests
 
 import util
@@ -21,6 +22,13 @@ class BlockchainExplorerConnector(ABC):
     @abstractmethod
     def get_transaction(self, address):
         pass
+
+    def be_non_200(self):
+        raise HTTPException(status_code=503, detail="Non-200 output from the external blockchain explorer!")
+
+    def be_exception(self):
+        raise HTTPException(status_code=503,
+                            detail="Exception in http request to the external blockchain explorer!")
 
 
 class BlockchainInfoConnector(BlockchainExplorerConnector):
@@ -42,9 +50,9 @@ class BlockchainInfoConnector(BlockchainExplorerConnector):
                          # , "balance": util.satoshi_to_bitcoin(tx["balance"])
                          })
             else:
-                output = {"error": "Not 200 output from blockchain explorer!"}
+                self.be_non_200()
         except Exception as exp:
-            output = {"error": "Exception in http request to blockchain explorer!"}
+            self.be_exception()
         return output
 
 
@@ -64,7 +72,7 @@ class EtherscanConnector(BlockchainExplorerConnector):
                 output = {"final_balance": util.wei_to_eth(int(resp_json["result"])), "transactions": []}
                 successful_balance = True
             else:
-                output = {"error": "Not 200 output from blockchain explorer!"}
+                self.be_non_200()
             if successful_balance:
                 transactions_url = self.base_url + "module=account" + "&action=txlist" + "&address={address}" + \
                                    "&startblock=0" + "&endblock=99999999" + "&sort=desc" + \
@@ -78,9 +86,11 @@ class EtherscanConnector(BlockchainExplorerConnector):
                             {"id": idx, "time": datetime.fromtimestamp(int(tx["timeStamp"]))
                                 , "result": util.wei_to_eth(int(tx["value"]))
                              })
+                else:
+                    self.be_non_200()
         except Exception as exp:
             print(exp)
-            output = {"error": "Exception in http request to blockchain explorer!"}
+            self.be_exception()
         return output
 
 
@@ -107,8 +117,8 @@ class BlockcypherConnector(BlockchainExplorerConnector):
                 print(resp.status_code)
                 print(resp.text)
                 """
-                output = {"error": "Non-200 output from blockchain explorer!"}
+                self.be_non_200()
         except Exception as exp:
             # traceback.print_exc()
-            output = {"error": "Exception in http request to blockchain explorer!"}
+            self.be_exception()
         return output

@@ -1,7 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 import util
 import be_connector
-
 
 app = FastAPI()
 
@@ -18,4 +17,4 @@ def get_address_transactions(coin_token: str, address: str):
         bc_connector = be_connector.BlockcypherConnector()
         return bc_connector.get_transaction(address)
     else:
-        return {"error": "Wrong input, please check your coin/token name!"}
+        raise HTTPException(status_code=404, detail="Wrong input, please check your coin/token name!")
