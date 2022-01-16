@@ -6,7 +6,7 @@ import requests
 import util
 
 
-class BlockchainExplorer(ABC):
+class BlockchainExplorerConnector(ABC):
     @property
     @abstractmethod
     def base_url(self):
@@ -22,7 +22,7 @@ class BlockchainExplorer(ABC):
         pass
 
 
-class BlockchainInfoExplorer(BlockchainExplorer):
+class BlockchainInfoConnector(BlockchainExplorerConnector):
     base_url = "https://blockchain.info/rawaddr/"
     api_key = None
 
@@ -47,7 +47,7 @@ class BlockchainInfoExplorer(BlockchainExplorer):
         return output
 
 
-class EtherscanExplorer(BlockchainExplorer):
+class EtherscanConnector(BlockchainExplorerConnector):
     base_url = "https://api.etherscan.io/api?"
     api_key = "PU6UCT34K7Z9DKUYIGGQBFE37FUBQYXQFR"
 
