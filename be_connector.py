@@ -1,5 +1,6 @@
 from datetime import datetime
 from abc import ABC, abstractmethod
+import traceback
 
 import requests
 
@@ -79,5 +80,35 @@ class EtherscanConnector(BlockchainExplorerConnector):
                              })
         except Exception as exp:
             print(exp)
+            output = {"error": "Exception in http request to blockchain explorer!"}
+        return output
+
+
+class BlockcypherConnector(BlockchainExplorerConnector):
+    base_url = "https://api.blockcypher.com/v1/doge/main/addrs/"
+    api_key = None
+
+    def get_transaction(self, address):
+        url = self.base_url + address
+        try:
+            resp = requests.get(url)
+            if resp.status_code == 200:
+                resp_json = resp.json()
+                output = {"final_balance": util.satoshi_to_bitcoin(resp_json["final_balance"]), "transactions": []}
+                for idx, tx in enumerate(resp_json["txrefs"]):
+                    value_converted = util.satoshi_to_bitcoin(tx["value"])
+                    output["transactions"].append(
+                        {"id": idx
+                            , "time": tx["confirmed"]
+                            , "result": value_converted if tx["tx_output_n"] >= 0 else -1 * value_converted
+                         })
+            else:
+                """
+                print(resp.status_code)
+                print(resp.text)
+                """
+                output = {"error": "Non-200 output from blockchain explorer!"}
+        except Exception as exp:
+            # traceback.print_exc()
             output = {"error": "Exception in http request to blockchain explorer!"}
         return output
