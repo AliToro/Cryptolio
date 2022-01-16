@@ -1,6 +1,7 @@
 from datetime import datetime
 from abc import ABC, abstractmethod
 import traceback
+import logging
 
 from fastapi import HTTPException
 import requests
@@ -89,7 +90,7 @@ class EtherscanConnector(BlockchainExplorerConnector):
                 else:
                     self.be_non_200()
         except Exception as exp:
-            print(exp)
+            logging.info(exp)
             self.be_exception()
         return output
 
@@ -113,12 +114,10 @@ class BlockcypherConnector(BlockchainExplorerConnector):
                             , "result": value_converted if tx["tx_output_n"] >= 0 else -1 * value_converted
                          })
             else:
-                """
-                print(resp.status_code)
-                print(resp.text)
-                """
+                logging.info(resp.status_code)
+                logging.info(resp.text)
                 self.be_non_200()
         except Exception as exp:
-            # traceback.print_exc()
+            traceback.print_exc()
             self.be_exception()
         return output

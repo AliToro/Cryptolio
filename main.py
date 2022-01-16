@@ -1,8 +1,12 @@
+import logging
+
 from fastapi import FastAPI, HTTPException
+
 import util
 import be_connector
 
 app = FastAPI()
+logging.basicConfig(filename='logs/cryptolio.log', level=logging.INFO)
 
 
 @app.post("/address/{coin_token}/{address}")
