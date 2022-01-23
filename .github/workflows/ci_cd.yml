@@ -16,5 +16,3 @@ jobs:
         cd /home/cryptolio-py-api/codes/
         pkill -f "/home/cryptolio-py-api/codes/bin/uvicorn main:app --reload" || true
         git pull
-        source bin/activate
-        uvicorn main:app --reload --host ${{ secrets.HOST }} >/home/cryptolio-py-api/codes/logs/run.log 2>&1
