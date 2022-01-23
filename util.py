@@ -4,4 +4,3 @@ def satoshi_to_bitcoin(satoshi):
 
 def wei_to_eth(wei):
     return wei / 10 ** 18
-

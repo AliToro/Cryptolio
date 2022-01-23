@@ -13,5 +13,4 @@ jobs:
     steps:
     - name: test
       run: |
-        cd /home/alireza
-        touch test_123
+        cd /home/cryptolio-py-api/codes/
