@@ -14,4 +14,4 @@ jobs:
     - name: test
       run: |
         cd /home/cryptolio-py-api/codes/
-        pkill -f "/home/cryptolio-py-api/codes/bin/uvicorn main:app --reload"
+        pkill -f "/home/cryptolio-py-api/codes/bin/uvicorn main:app --reload" || true
