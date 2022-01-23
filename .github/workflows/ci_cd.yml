@@ -18,3 +18,5 @@ jobs:
         git pull
         source bin/activate
         nohup uvicorn main:app --reload --host ${{ secrets.HOST }} >/home/cryptolio-py-api/codes/logs/run.log 2>&1 &
+        sleep 50
+        ls
