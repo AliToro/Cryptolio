@@ -2,8 +2,7 @@ name: scp files
 
 on:
   push:
-    branches:
-      - master
+    branches: [master]
 
 jobs:
   build:
