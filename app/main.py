@@ -16,10 +16,17 @@ def get_address_transactions(coin_token: str, address: str):
     elif coin_token == "dogecoin":
         connector = be_connector.BlockcypherConnector()
     else:
-        raise HTTPException(status_code=404, detail="Wrong input, please check your coin/token name!")
+        raise HTTPException(status_code=404, detail="unsupported coin/token!")
     return connector.get_transaction(address)
 
 
-@app.get("/price/{exchange}/{coin_token}")
-def get_price(exchange: str, coin_token: str):
-    pg_connector.get_data()
+@app.get("/price/{exchange}/{coin_token}/{epoc}")
+def get_price(exchange: str, coin_token: str, epoc: int):
+    if exchange == "kucoin":
+        if coin_token == "btc":
+            closest_epoc_price = pg_connector.get_price(exchange, coin_token, epoc)
+            return {"epoc": closest_epoc_price[0], "price": closest_epoc_price[1]}
+        else:
+            raise HTTPException(status_code=404, detail="unsupported coin/token for the Kucoin exchange!")
+    else:
+        raise HTTPException(status_code=404, detail="unsupported exchange!")

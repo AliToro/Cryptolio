@@ -48,14 +48,22 @@ class MyPsycopg2Connector():
                 self.conn.close()
                 logging.info('Database connection closed.')
 
-    def get_data(self):
-        self.cur.execute("SELECT * FROM kucoin_btc_usd_hourly limit 10")
+    def get_price(self, exchange, coin_token, epoc):
+        self.cur.execute("""
+        select unix, close 
+        from (
+            select * 
+            from kucoin_btc_usd_hourly 
+            where abs(unix - {epoc}) < 3*86400
+        ) as n 
+        order by abs(unix - {epoc}) 
+        limit 1
+        """.format(epoc=epoc))
         logging.info("The number of parts: {}".format(self.cur.rowcount))
         row = self.cur.fetchone()
+        logging.info("The closest epoc and price are: {}".format(row))
 
-        while row is not None:
-            logging.info(row)
-            row = self.cur.fetchone()
+        return row
 
 
 pg_connector = MyPsycopg2Connector()
