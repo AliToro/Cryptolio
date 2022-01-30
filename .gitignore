@@ -132,3 +132,4 @@ dmypy.json
 
 logs/
 price/
+set_env.sh
