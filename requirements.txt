@@ -1,4 +1,4 @@
-fastapi
-uvicorn[standard]
-requests
-psycopg2-binary
+fastapi==0.72.0
+uvicorn[standard]==0.17.1
+requests==2.27.1
+psycopg2-binary==2.9.3
