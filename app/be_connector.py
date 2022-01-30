@@ -6,7 +6,7 @@ import logging
 from fastapi import HTTPException
 import requests
 
-from app import util
+from . import util
 
 
 class BlockchainExplorerConnector(ABC):
