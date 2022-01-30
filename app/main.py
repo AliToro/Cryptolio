@@ -2,23 +2,20 @@ import logging
 
 from fastapi import FastAPI, HTTPException
 
-import util
-import be_connector
+from app import be_connector
 
 app = FastAPI()
 logging.basicConfig(filename='logs/cryptolio.log', level=logging.INFO)
 
 
-@app.post("/address/{coin_token}/{address}")
+@app.get("/address/{coin_token}/{address}")
 def get_address_transactions(coin_token: str, address: str):
     if coin_token == "bitcoin":
-        bci_connector = be_connector.BlockchainInfoConnector()
-        return bci_connector.get_transaction(address)
+        connector = be_connector.BlockchainInfoConnector()
     elif coin_token == "ethereum":
-        ets_connector = be_connector.EtherscanConnector()
-        return ets_connector.get_transaction(address)
+        connector = be_connector.EtherscanConnector()
     elif coin_token == "dogecoin":
-        bc_connector = be_connector.BlockcypherConnector()
-        return bc_connector.get_transaction(address)
+        connector = be_connector.BlockcypherConnector()
     else:
         raise HTTPException(status_code=404, detail="Wrong input, please check your coin/token name!")
+    return connector.get_transaction(address)
