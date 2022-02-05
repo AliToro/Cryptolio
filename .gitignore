@@ -132,4 +132,5 @@ dmypy.json
 
 logs/
 price/
-set_env.sh
+local_env.sh
+docker_env.list
