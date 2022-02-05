@@ -48,7 +48,7 @@ class MyPsycopg2Connector():
                 self.conn.close()
                 logging.info('Database connection closed.')
 
-    def get_price(self, exchange, coin_token, epoc):
+    def get_price(self, coin_token, epoc):
         self.cur.execute("""
         select unix, close 
         from (
