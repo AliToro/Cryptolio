@@ -1,22 +1,23 @@
-name: scp files
+name: deploy on server
 
 on:
   push:
-    branches: [test]
+    branches: [main]
   pull_request:
-    branches: [test]
+    branches: [main]
 
 jobs:
   build:
     name: Build
     runs-on: self-hosted
     steps:
-    - name: test
+    - name: build
       run: |
-        cd /home/cryptolio-py-api/codes/
-        pkill -f "/home/cryptolio-py-api/codes/bin/uvicorn main:app --reload" || true
-        git pull
-        source bin/activate
-        nohup uvicorn main:app --reload --host ${{ secrets.HOST }} >/home/cryptolio-py-api/codes/logs/run.log 2>&1 &
-        sleep 50
-        ls
+        cd /home/cryptolio-py-api/dockerize/
+        docker container stop cryptolio-py-api-cnt
+        docker container rm cryptolio-py-api-cnt
+        rm -r *
+        rm -r .git*
+        git clone https://github.com/AliToro/Cryptolio.git .
+        docker build -t cryptolio-py-api .
+        docker run --env-file ../docker_env.list -d --name cryptolio-py-api-cnt -p 8000:8000 cryptolio-py-api
