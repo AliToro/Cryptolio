@@ -22,8 +22,13 @@ def get_address_transactions(coin_token: str, address: str):
 
 @app.get("/price/{coin_token}/{epoc}")
 def get_price(coin_token: str, epoc: int):
-    if coin_token == "btc":
+    if coin_token in ['Aave', 'Algorand', 'Avalanche', 'Axie_Infinity', 'Binance_Coin', 'Binance_USD', 'BitTorrent',
+                      'Bitcoin', 'Bitcoin_BEP2', 'Bitcoin_Cash', 'Bitcoin_SV', 'Cardano', 'Chainlink', 'Cosmos',
+                      'Crypto.com_Coin', 'Dai', 'Dash', 'Dogecoin', 'EOS', 'Elrond', 'Ethereum', 'Ethereum_Classic',
+                      'FTX_Token', 'Filecoin', 'GRT', 'ICP', 'IOTA', 'Klaytn', 'Kusama', 'LEO', 'Litecoin', 'Maker',
+                      'Monero', 'Neo', 'PncakeSwap', 'Polkadot', 'Polygon', 'SHIBA_INU', 'Solana', 'Stellar', 'THETA',
+                      'Tether', 'Tezos', 'Tron', 'USD_Coin', 'Uniswap', 'VeChain', 'WBTC', 'Waves', 'XPR']:
         closest_epoc_price = pg_connector.get_price(coin_token, epoc)
         return {"epoc": closest_epoc_price[0], "price": closest_epoc_price[1]}
     else:
-        raise HTTPException(status_code=404, detail="unsupported coin/token for the Kucoin exchange!")
+        raise HTTPException(status_code=503, detail="unsupported coin/token!")

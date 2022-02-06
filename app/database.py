@@ -2,6 +2,7 @@ import logging
 import os
 
 import psycopg2
+from fastapi import HTTPException
 
 
 class MyPsycopg2Connector():
@@ -53,17 +54,21 @@ class MyPsycopg2Connector():
         select epoc, price 
         from (
             select * 
-            from coin_price 
-            where source='Sajjad' and currency={coin_token} and abs(epoc - {epoc}) < 5*86400
+            from currency_price 
+            where data_source='Sajjad' and currency='{coin_token}' and abs(epoc - {epoc}) < 100*86400
         ) as n 
         order by abs(epoc - {epoc}) 
         limit 1
         """.format(coin_token=coin_token, epoc=epoc))
         logging.info("The number of parts: {}".format(self.cur.rowcount))
-        row = self.cur.fetchone()
-        logging.info("The closest epoc and price are: {}".format(row))
-
-        return row
+        if self.cur.rowcount == 0:
+            message = "Cannot find any price for {coin_token} near to {epoc}".format(coin_token=coin_token, epoc=epoc)
+            logging.warning(message)
+            raise HTTPException(status_code=503, detail=message)
+        else:
+            row = self.cur.fetchone()
+            logging.info("The closest epoc and price are: {}".format(row))
+            return row
 
 
 pg_connector = MyPsycopg2Connector()
