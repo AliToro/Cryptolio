@@ -50,15 +50,15 @@ class MyPsycopg2Connector():
 
     def get_price(self, coin_token, epoc):
         self.cur.execute("""
-        select unix, close 
+        select epoc, price 
         from (
             select * 
-            from kucoin_btc_usd_hourly 
-            where abs(unix - {epoc}) < 3*86400
+            from coin_price 
+            where source='Sajjad' and currency={coin_token} and abs(epoc - {epoc}) < 5*86400
         ) as n 
-        order by abs(unix - {epoc}) 
+        order by abs(epoc - {epoc}) 
         limit 1
-        """.format(epoc=epoc))
+        """.format(coin_token=coin_token, epoc=epoc))
         logging.info("The number of parts: {}".format(self.cur.rowcount))
         row = self.cur.fetchone()
         logging.info("The closest epoc and price are: {}".format(row))
