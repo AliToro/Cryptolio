@@ -27,7 +27,7 @@ def get_price(coin_token: str, epoc: int):
                       'Crypto.com_Coin', 'Dai', 'Dash', 'Dogecoin', 'EOS', 'Elrond', 'Ethereum', 'Ethereum_Classic',
                       'FTX_Token', 'Filecoin', 'GRT', 'ICP', 'IOTA', 'Klaytn', 'Kusama', 'LEO', 'Litecoin', 'Maker',
                       'Monero', 'Neo', 'PncakeSwap', 'Polkadot', 'Polygon', 'SHIBA_INU', 'Solana', 'Stellar', 'THETA',
-                      'Tether', 'Tezos', 'Tron', 'USD_Coin', 'Uniswap', 'VeChain', 'WBTC', 'Waves', 'XPR']:
+                      'Tether', 'Tezos', 'Tron', 'USD_Coin', 'Uniswap', 'VeChain', 'WBTC', 'Waves', 'XRP']:
         closest_epoc_price = pg_connector.get_price(coin_token, epoc)
         return {"epoc": closest_epoc_price[0], "price": closest_epoc_price[1]}
     else:
