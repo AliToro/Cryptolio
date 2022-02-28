@@ -55,7 +55,7 @@ class MyPsycopg2Connector():
         from (
             select * 
             from currency_price 
-            where data_source='Sajjad' and currency='{coin_token}' and abs(epoc - {epoc}) < 100*86400
+            where currency='{coin_token}' and abs(epoc - {epoc}) < 30*86400
         ) as n 
         order by abs(epoc - {epoc}) 
         limit 1
