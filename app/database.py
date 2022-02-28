@@ -49,20 +49,20 @@ class MyPsycopg2Connector():
                 self.conn.close()
                 logging.info('Database connection closed.')
 
-    def get_price(self, coin_token, epoc):
+    def get_price(self, currency, epoc):
         self.cur.execute("""
         select epoc, price 
         from (
             select * 
             from currency_price 
-            where currency='{coin_token}' and abs(epoc - {epoc}) < 30*86400
+            where currency='{currency}' and abs(epoc - {epoc}) < 30*86400
         ) as n 
         order by abs(epoc - {epoc}) 
         limit 1
-        """.format(coin_token=coin_token, epoc=epoc))
+        """.format(currency=currency, epoc=epoc))
         logging.info("The number of parts: {}".format(self.cur.rowcount))
         if self.cur.rowcount == 0:
-            message = "Cannot find any price for {coin_token} near to {epoc}".format(coin_token=coin_token, epoc=epoc)
+            message = "Cannot find any price for {currency} near to {epoc}".format(currency=currency, epoc=epoc)
             logging.warning(message)
             raise HTTPException(status_code=503, detail=message)
         else:
